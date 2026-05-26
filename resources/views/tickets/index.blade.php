@@ -41,7 +41,12 @@
 
         <div class="section-divider">Поиск нужной выборки</div>
 
-        <form class="grid filters-grid" method="get" action="{{ route('tickets.index') }}">
+        <form class="filters-row filters-row--inline" method="get" action="{{ route('tickets.index') }}">
+            <label>
+                Поиск
+                <input name="q" value="{{ $filters['q'] ?? '' }}" placeholder="Тема, описание, кабинет или заявитель">
+            </label>
+
             <label>
                 Статус
                 <select name="status">
@@ -63,6 +68,16 @@
                 </select>
             </label>
 
+            <label>
+                Категория
+                <select name="category">
+                    <option value="">Все категории</option>
+                    @foreach(\App\Models\Ticket::CATEGORY_LABELS as $value => $label)
+                        <option value="{{ $value }}" @selected(($filters['category'] ?? '') === $value)>{{ $label }}</option>
+                    @endforeach
+                </select>
+            </label>
+
             @if(auth()->user()->role === 'admin')
                 <label>
                     Корпус
@@ -79,6 +94,7 @@
             <div class="toolbar-actions">
                 <button type="submit">Применить фильтры</button>
                 <a class="button secondary" href="{{ route('tickets.index') }}">Сбросить</a>
+                <a class="button secondary" href="{{ route('tickets.export', request()->query()) }}">Экспорт CSV</a>
             </div>
         </form>
 
@@ -102,10 +118,6 @@
                 @if(auth()->user()->role === 'user')
                     <a class="button secondary" href="{{ route('tickets.create') }}">Создать заявку</a>
                 @endif
-                <form method="post" action="{{ route('logout') }}">
-                    @csrf
-                    <button class="button-muted" type="submit">Выйти</button>
-                </form>
             </div>
         </div>
 
@@ -120,10 +132,10 @@
         @else
             <div class="grid tickets-grid">
                 @foreach($tickets as $ticket)
-                    <article class="ticket-card">
+                    <article class="ticket-card {{ $ticket->is_overdue ? 'ticket-overdue' : '' }}">
                         <header>
                             <div class="ticket-title-group">
-                                <div class="ticket-kicker">Служба обращений</div>
+                                <div class="ticket-kicker">{{ $ticket->category_label }}</div>
                                 <h3>{{ $ticket->title }}</h3>
                                 <div class="footer-note">{{ $ticket->campus_label }} · {{ $ticket->room ?: 'Кабинет не указан' }}</div>
                             </div>
@@ -132,6 +144,7 @@
 
                         <div class="meta">
                             <span class="pill pill-muted">Приоритет: {{ $ticket->priority_label }}</span>
+                            <span class="pill {{ $ticket->is_overdue ? 'pill-danger' : 'pill-muted' }}">Срок: {{ $ticket->deadline_label }}</span>
                             <span class="pill pill-muted">История: {{ $ticket->comments_count }}</span>
                             @if($ticket->assignee)
                                 <span class="pill pill-muted">Исполнитель: {{ $ticket->assignee->name }}</span>
@@ -151,6 +164,21 @@
                             <div class="toolbar-actions">
                                 <a class="button secondary" href="{{ route('tickets.show', $ticket) }}">Открыть</a>
                                 <a class="button secondary" href="{{ route('tickets.edit', $ticket) }}">Редактировать</a>
+                                @if($ticket->status === 'open')
+                                    <form method="post" action="{{ route('tickets.transition', $ticket) }}">
+                                        @csrf
+                                        @method('patch')
+                                        <input type="hidden" name="status" value="in_progress">
+                                        <button class="button-muted" type="submit">В работу</button>
+                                    </form>
+                                @elseif($ticket->status === 'in_progress')
+                                    <form method="post" action="{{ route('tickets.transition', $ticket) }}">
+                                        @csrf
+                                        @method('patch')
+                                        <input type="hidden" name="status" value="resolved">
+                                        <button class="button-muted" type="submit">Решена</button>
+                                    </form>
+                                @endif
                             </div>
                         @else
                             <div class="toolbar-actions">

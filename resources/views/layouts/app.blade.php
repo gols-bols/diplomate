@@ -94,6 +94,30 @@
             gap: 8px;
             flex-wrap: wrap;
             align-items: center;
+            margin-left: auto;
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-user-name {
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .logout-form {
+            margin: 0;
+        }
+
+        .logout-form button {
+            padding: 9px 14px;
+            border-radius: 999px;
+            font-size: 14px;
         }
 
         .nav-link {
@@ -256,9 +280,42 @@
             gap: 18px;
         }
 
-        .filters-grid {
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            align-items: end;
+        .filters-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .filters-row label {
+            flex: 1 1 170px;
+            min-width: 150px;
+            margin: 0;
+        }
+
+        .filters-row--inline {
+            flex-wrap: nowrap;
+            overflow-x: auto;
+        }
+
+        .filters-row--inline label {
+            flex: 1 1 160px;
+            min-width: 140px;
+        }
+
+        .filters-row .toolbar-actions {
+            flex: 0 0 auto;
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: flex-end;
+            gap: 8px;
+            margin-left: 0;
+        }
+
+        @media (max-width: 1100px) {
+            .filters-row--inline {
+                flex-wrap: wrap;
+            }
         }
 
         .tickets-grid {
@@ -362,6 +419,11 @@
             color: var(--muted);
         }
 
+        .pill-danger {
+            background: var(--danger-bg);
+            color: var(--danger-text);
+        }
+
         .status-open {
             background: var(--status-open-bg);
             color: var(--status-open-text);
@@ -380,6 +442,26 @@
         .status-closed {
             background: var(--status-closed-bg);
             color: var(--status-closed-text);
+        }
+
+        .ticket-overdue {
+            border-color: rgba(143, 54, 38, 0.34);
+            box-shadow: 0 18px 34px rgba(143, 54, 38, 0.12);
+        }
+
+        .ticket-overdue::before {
+            content: "Просрочено";
+            position: absolute;
+            right: 16px;
+            bottom: 16px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: var(--danger-bg);
+            color: var(--danger-text);
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
         }
 
         .detail-list {
@@ -476,6 +558,41 @@
         .description-card p {
             font-size: 16px;
             line-height: 1.7;
+        }
+
+        .ticket-attachment {
+            margin: 18px 0 0;
+        }
+
+        .ticket-attachment img {
+            display: block;
+            width: 100%;
+            max-height: 360px;
+            object-fit: contain;
+            border-radius: 14px;
+            border: 1px solid rgba(214, 197, 171, 0.9);
+            background: #fffdf9;
+        }
+
+        .ticket-attachment figcaption {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .file-preview {
+            display: block;
+            margin-top: 8px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: var(--success-bg);
+            color: var(--success-text);
+            font-size: 14px;
+        }
+
+        input[type="file"] {
+            margin-top: 6px;
+            max-width: 100%;
         }
 
         .wide-actions {
@@ -643,6 +760,71 @@
 
         .dashboard-row small {
             color: var(--muted);
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+        }
+
+        .admin-card {
+            display: grid;
+            gap: 16px;
+            padding: 20px;
+            border-radius: 18px;
+            background: linear-gradient(180deg, rgba(255, 253, 249, 0.98), rgba(246, 237, 224, 0.92));
+            border: 1px solid rgba(214, 197, 171, 0.9);
+            box-shadow: 0 16px 34px rgba(84, 60, 31, 0.08);
+        }
+
+        .admin-card header {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .admin-card h3 {
+            margin: 0 0 6px;
+            font-size: 22px;
+        }
+
+        .admin-card p {
+            margin: 0;
+            color: var(--muted);
+            overflow-wrap: anywhere;
+        }
+
+        .admin-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .admin-metrics div {
+            padding: 12px;
+            border-radius: 14px;
+            background: rgba(255, 250, 242, 0.76);
+            border: 1px solid rgba(220, 205, 180, 0.72);
+        }
+
+        .admin-metrics strong {
+            display: block;
+            font-size: 24px;
+        }
+
+        .admin-metrics span {
+            display: block;
+            color: var(--muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .admin-form {
+            display: grid;
+            gap: 12px;
         }
 
         .empty {
@@ -836,9 +1018,19 @@
         <div class="nav-links">
             <a class="nav-link {{ request()->routeIs('tickets.dashboard') ? 'active' : '' }}" href="{{ route('tickets.dashboard') }}">Дашборд</a>
             <a class="nav-link {{ request()->routeIs('tickets.index') ? 'active' : '' }}" href="{{ route('tickets.index') }}">Журнал</a>
+            @if(auth()->user()->role === 'admin')
+                <a class="nav-link {{ request()->routeIs('admin.users') ? 'active' : '' }}" href="{{ route('admin.users') }}">Админка</a>
+            @endif
             @if(auth()->user()->role === 'user')
                 <a class="nav-link {{ request()->routeIs('tickets.create') ? 'active' : '' }}" href="{{ route('tickets.create') }}">Новая заявка</a>
             @endif
+            <div class="nav-user">
+                <span class="nav-user-name">{{ auth()->user()->name }}</span>
+                <form class="logout-form" method="post" action="{{ route('logout') }}">
+                    @csrf
+                    <button class="button-muted" type="submit">Выйти</button>
+                </form>
+            </div>
         </div>
     </nav>
 @endauth

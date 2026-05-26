@@ -2,7 +2,7 @@
 
 Для быстрого переноса в Figma подготовлен общий board:
 
-- [spk_helpdesk_figma_board.svg](/Users/gnome/Downloads/kurso-main%202/docs/spk_helpdesk_figma_board.svg)
+- `docs/spk_helpdesk_figma_board.svg` — общий board для Figma
 
 Что внутри:
 

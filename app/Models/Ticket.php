@@ -29,17 +29,36 @@ class Ticket extends Model
         'closed' => 'status-closed',
     ];
 
+    public const CATEGORY_LABELS = [
+        'equipment' => 'Оборудование',
+        'network' => 'Сеть и интернет',
+        'software' => 'Программное обеспечение',
+        'access' => 'Доступы',
+        'printing' => 'Печать',
+        'other' => 'Другое',
+    ];
+
     protected $fillable = [
         'title',
         'description',
+        'attachment_path',
         'priority',
+        'category',
         'status',
         'requester_name',
         'campus',
         'room',
+        'deadline',
         'created_by',
         'assignee_id',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'deadline' => 'date:Y-m-d',
+        ];
+    }
 
     public function creator(): BelongsTo
     {
@@ -78,5 +97,37 @@ class Ticket extends Model
             'low' => 'Низкий',
             default => 'Обычный',
         };
+    }
+
+    public function getCategoryLabelAttribute(): string
+    {
+        return self::CATEGORY_LABELS[$this->category] ?? 'Другое';
+    }
+
+    public function getDeadlineLabelAttribute(): string
+    {
+        return $this->deadline?->format('d.m.Y') ?? 'Без срока';
+    }
+
+    public function getIsOverdueAttribute(): bool
+    {
+        if (! $this->deadline || in_array($this->status, ['resolved', 'closed'], true)) {
+            return false;
+        }
+
+        return $this->deadline->isPast() && ! $this->deadline->isToday();
+    }
+
+    public function getAttachmentUrlAttribute(): ?string
+    {
+        if (! $this->attachment_path) {
+            return null;
+        }
+
+        if (str_starts_with($this->attachment_path, 'uploads/')) {
+            return asset($this->attachment_path);
+        }
+
+        return asset('storage/' . $this->attachment_path);
     }
 }

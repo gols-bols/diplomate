@@ -15,4 +15,9 @@ $app->singleton(
     App\Http\Kernel::class
 );
 
+$app->singleton(
+    Illuminate\Foundation\Console\ServeCommand::class,
+    App\Console\Commands\ServeCommand::class
+);
+
 return $app;

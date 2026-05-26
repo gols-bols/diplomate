@@ -12,6 +12,8 @@
             <div class="ticket-hero-meta">
                 <span class="pill {{ $ticket->status_class }}">{{ $ticket->status_label }}</span>
                 <span class="pill pill-muted">Приоритет: {{ $ticket->priority_label }}</span>
+                <span class="pill pill-muted">Категория: {{ $ticket->category_label }}</span>
+                <span class="pill {{ $ticket->is_overdue ? 'pill-danger' : 'pill-muted' }}">Срок: {{ $ticket->deadline_label }}</span>
                 <span class="pill pill-muted">Корпус: {{ $ticket->campus_label }}</span>
             </div>
         </div>
@@ -29,6 +31,12 @@
             <article class="detail-card description-card">
                 <h2>Описание обращения</h2>
                 <p>{{ $ticket->description }}</p>
+                @if($ticket->attachment_url)
+                    <figure class="ticket-attachment">
+                        <img src="{{ $ticket->attachment_url }}" alt="Вложение к заявке">
+                        <figcaption>Фото, приложенное при создании заявки</figcaption>
+                    </figure>
+                @endif
             </article>
 
             <aside class="detail-card">
@@ -38,6 +46,8 @@
                     <div><strong>Роль заявителя:</strong> {{ $ticket->creator?->role_label ?? 'Не указана' }}</div>
                     <div><strong>Корпус:</strong> {{ $ticket->campus_label }}</div>
                     <div><strong>Кабинет:</strong> {{ $ticket->room ?: 'Не указан' }}</div>
+                    <div><strong>Категория:</strong> {{ $ticket->category_label }}</div>
+                    <div><strong>Срок:</strong> {{ $ticket->deadline_label }}</div>
                     <div><strong>Исполнитель:</strong> {{ $ticket->assignee?->name ?? 'Не назначен' }}</div>
                     <div><strong>Создано:</strong> {{ optional($ticket->created_at)->format('d.m.Y H:i') ?? '—' }}</div>
                     <div><strong>Обновлено:</strong> {{ optional($ticket->updated_at)->format('d.m.Y H:i') ?? '—' }}</div>
@@ -49,6 +59,30 @@
             <a class="button secondary" href="{{ route('tickets.index') }}">Назад к списку</a>
             @if(in_array(auth()->user()->role, ['admin', 'manager'], true))
                 <a class="button" href="{{ route('tickets.edit', $ticket) }}">Перейти к обработке</a>
+                @if($ticket->status !== 'in_progress')
+                    <form method="post" action="{{ route('tickets.transition', $ticket) }}">
+                        @csrf
+                        @method('patch')
+                        <input type="hidden" name="status" value="in_progress">
+                        <button class="button-muted" type="submit">Взять в работу</button>
+                    </form>
+                @endif
+                @if($ticket->status !== 'resolved')
+                    <form method="post" action="{{ route('tickets.transition', $ticket) }}">
+                        @csrf
+                        @method('patch')
+                        <input type="hidden" name="status" value="resolved">
+                        <button class="button-muted" type="submit">Отметить решенной</button>
+                    </form>
+                @endif
+                @if($ticket->status !== 'closed')
+                    <form method="post" action="{{ route('tickets.transition', $ticket) }}">
+                        @csrf
+                        @method('patch')
+                        <input type="hidden" name="status" value="closed">
+                        <button class="button-muted" type="submit">Закрыть</button>
+                    </form>
+                @endif
             @endif
         </div>
 

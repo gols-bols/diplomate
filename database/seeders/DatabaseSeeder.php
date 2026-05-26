@@ -58,10 +58,12 @@ class DatabaseSeeder extends Seeder
             [
                 'description' => 'Принтер включается, но документы остаются в очереди печати и не выводятся на устройство.',
                 'priority' => 'high',
+                'category' => 'printing',
                 'status' => 'open',
                 'requester_name' => $user->name,
                 'campus' => '1',
                 'room' => 'Кабинет 21',
+                'deadline' => now()->addDays(1)->toDateString(),
                 'assignee_id' => null,
             ]
         );
@@ -74,10 +76,12 @@ class DatabaseSeeder extends Seeder
             [
                 'description' => 'В аудитории нет изображения на проекторе, требуется проверить кабель и источник сигнала.',
                 'priority' => 'normal',
+                'category' => 'equipment',
                 'status' => 'in_progress',
                 'requester_name' => $user->name,
                 'campus' => '2',
                 'room' => 'Аудитория 204',
+                'deadline' => now()->addDays(3)->toDateString(),
                 'assignee_id' => $secondManager->id,
             ]
         );
@@ -90,10 +94,12 @@ class DatabaseSeeder extends Seeder
             [
                 'description' => 'Компьютер в методическом кабинете не получает сетевой адрес и не открывает внутренние ресурсы колледжа.',
                 'priority' => 'high',
+                'category' => 'network',
                 'status' => 'resolved',
                 'requester_name' => 'Секретарь приемной комиссии',
                 'campus' => 'main',
                 'room' => 'Приемная',
+                'deadline' => now()->subDays(1)->toDateString(),
                 'assignee_id' => $mainManager->id,
             ]
         );
@@ -106,10 +112,12 @@ class DatabaseSeeder extends Seeder
             [
                 'description' => 'В библиотеке отсутствует доступ к интернету на двух рабочих местах.',
                 'priority' => 'high',
+                'category' => 'network',
                 'status' => 'closed',
                 'requester_name' => $user->name,
                 'campus' => '3',
                 'room' => 'Библиотека, зал 1',
+                'deadline' => now()->subDays(2)->toDateString(),
                 'assignee_id' => $admin->id,
             ]
         );

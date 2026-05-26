@@ -90,7 +90,8 @@
 3. Создать БД MySQL `spk_tickets`
 4. `php artisan key:generate`
 5. `php artisan migrate --seed`
-6. `php artisan serve`
+6. `php artisan storage:link` (для старых вложений; новые фото сохраняются в `public/uploads/tickets`)
+7. Запуск сервера с поддержкой вложений до 5 МБ: из корня проекта `composer serve` или `.\serve.ps1` (передают `upload_tmp_dir` процессу `php -S`; каталог `storage/framework/uploads` создаётся автоматически). На Windows не используйте голый `php artisan serve` — встроенный сервер не получит временный каталог, и загрузка файлов упадёт. Допустимо: `php artisan serve` после обновления проекта (кастомная команда `serve` задаёт те же `-d` флаги).
 
 ### Тестовые данные
 После `php artisan migrate --seed` в системе будут созданы тестовые пользователи:

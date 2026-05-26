@@ -23,7 +23,7 @@
         @endif
 
         <div class="form-shell">
-            <form class="form-panel" method="post" action="{{ route('tickets.store') }}">
+            <form class="form-panel" method="post" action="{{ route('tickets.store') }}" enctype="multipart/form-data">
                 @csrf
 
                 <label>
@@ -50,9 +50,26 @@
                 </label>
 
                 <label>
+                    Категория
+                    <span class="hint">Категория помогает быстро понять тип проблемы и строить отчеты.</span>
+                    <select name="category">
+                        @foreach(\App\Models\Ticket::CATEGORY_LABELS as $value => $label)
+                            <option value="{{ $value }}" @selected(old('category', 'other') === $value)>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </label>
+
+                <label>
                     Подробное описание
                     <span class="hint">Укажите обстоятельства возникновения проблемы, оборудование и желаемый результат.</span>
                     <textarea name="description" placeholder="Опишите ситуацию подробнее" required>{{ old('description') }}</textarea>
+                </label>
+
+                <label>
+                    Фото неисправности
+                    <span class="hint">Необязательно: JPG, PNG, WebP или GIF, до 5 МБ. Если фото не прикрепляется — уменьшите размер или запустите сервер через composer serve / serve.ps1 (лимит PHP по умолчанию часто 2 МБ).</span>
+                    <input type="file" name="attachment" accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif" id="attachment-input">
+                    <span class="file-preview" id="attachment-preview" hidden></span>
                 </label>
 
                 <label>
@@ -63,6 +80,12 @@
                         <option value="normal" @selected(old('priority', 'normal') === 'normal')>Обычный</option>
                         <option value="high" @selected(old('priority') === 'high')>Высокий</option>
                     </select>
+                </label>
+
+                <label>
+                    Желаемый срок решения
+                    <span class="hint">Можно оставить пустым, если точный срок не важен.</span>
+                    <input type="date" name="deadline" value="{{ old('deadline') }}">
                 </label>
 
                 <div class="toolbar-actions">
@@ -98,4 +121,27 @@
         </div>
     </section>
 </main>
+<script>
+    (function () {
+        const input = document.getElementById('attachment-input');
+        const preview = document.getElementById('attachment-preview');
+
+        if (!input || !preview) {
+            return;
+        }
+
+        input.addEventListener('change', function () {
+            const file = input.files && input.files[0];
+
+            if (!file) {
+                preview.hidden = true;
+                preview.textContent = '';
+                return;
+            }
+
+            preview.hidden = false;
+            preview.textContent = 'Выбран файл: ' + file.name + ' (' + Math.max(1, Math.round(file.size / 1024)) + ' КБ)';
+        });
+    })();
+</script>
 @endsection

@@ -54,6 +54,15 @@
                     </label>
 
                     <label>
+                        Категория
+                        <select name="category">
+                            @foreach(\App\Models\Ticket::CATEGORY_LABELS as $value => $label)
+                                <option value="{{ $value }}" @selected(old('category', $ticket->category) === $value)>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </label>
+
+                    <label>
                         Исполнитель
                         <select name="assignee_id">
                             <option value="">Не назначен</option>
@@ -71,6 +80,8 @@
                             <div><strong>Заявитель:</strong> {{ $ticket->requester_name ?: ($ticket->creator?->name ?? 'Не указан') }}</div>
                             <div><strong>Корпус:</strong> {{ $ticket->campus_label }}</div>
                             <div><strong>Кабинет:</strong> {{ $ticket->room ?: 'Не указан' }}</div>
+                            <div><strong>Категория:</strong> {{ $ticket->category_label }}</div>
+                            <div><strong>Срок:</strong> {{ $ticket->deadline_label }}</div>
                             <div><strong>Тема:</strong> {{ $ticket->title }}</div>
                             <div><strong>Описание:</strong> {{ $ticket->description }}</div>
                         </div>
@@ -94,6 +105,11 @@
                         <option value="resolved" @selected(old('status', $ticket->status) === 'resolved')>Решена</option>
                         <option value="closed" @selected(old('status', $ticket->status) === 'closed')>Закрыта</option>
                     </select>
+                </label>
+
+                <label>
+                    Срок решения
+                    <input type="date" name="deadline" value="{{ old('deadline', $ticket->deadline?->format('Y-m-d')) }}">
                 </label>
 
                 <div class="toolbar-actions">

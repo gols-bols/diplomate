@@ -96,6 +96,29 @@
             </article>
 
             <article class="chart-card">
+                <h3>Категории</h3>
+                @if($categoryStats->isEmpty())
+                    <div class="empty">Пока нет данных по категориям.</div>
+                @else
+                    <div class="bar-list">
+                        @foreach($categoryStats as $item)
+                            <div class="bar-row">
+                                <header>
+                                    <span>{{ $item['label'] }}</span>
+                                    <span>{{ $item['count'] }} · {{ $item['percent'] }}%</span>
+                                </header>
+                                <div class="bar-track">
+                                    <div class="bar-fill" style="width: {{ max($item['percent'], $item['count'] ? 8 : 0) }}%"></div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </article>
+        </div>
+
+        <div class="analytics-grid">
+            <article class="chart-card">
                 <h3>Исполнители</h3>
                 @if($assigneeStats->isEmpty())
                     <div class="empty">Пока нет данных по исполнителям.</div>
