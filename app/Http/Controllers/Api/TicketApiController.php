@@ -64,11 +64,7 @@ class TicketApiController extends Controller
 
     public function show(Request $request, Ticket $ticket): JsonResponse
     {
-        if (! $this->canView($request->user(), $ticket)) {
-            return response()->json([
-                'message' => 'Недостаточно прав для просмотра этой заявки.',
-            ], 403);
-        }
+        $this->authorize('view', $ticket);
 
         $ticket->load(['creator', 'assignee', 'comments.user']);
 
@@ -80,11 +76,7 @@ class TicketApiController extends Controller
 
     public function comment(Request $request, Ticket $ticket): JsonResponse
     {
-        if (! $this->canView($request->user(), $ticket)) {
-            return response()->json([
-                'message' => 'Недостаточно прав для комментирования этой заявки.',
-            ], 403);
-        }
+        $this->authorize('view', $ticket);
 
         $validator = Validator::make($request->all(), [
             'body' => ['required', 'string', 'max:2000'],
@@ -153,13 +145,9 @@ class TicketApiController extends Controller
 
     public function update(Request $request, Ticket $ticket): JsonResponse
     {
-        $user = $request->user();
+        $this->authorize('update', $ticket);
 
-        if (! $this->canEdit($user, $ticket)) {
-            return response()->json([
-                'message' => 'Недостаточно прав для изменения этой заявки.',
-            ], 403);
-        }
+        $user = $request->user();
 
         if ($user?->role === 'admin') {
             $validator = Validator::make($request->all(), [
@@ -198,35 +186,6 @@ class TicketApiController extends Controller
         ]);
     }
 
-    private function canView(?User $user, Ticket $ticket): bool
-    {
-        if (! $user) {
-            return false;
-        }
-
-        if ($user->role === 'admin') {
-            return true;
-        }
-
-        if ($user->role === 'manager') {
-            return $user->campus === $ticket->campus;
-        }
-
-        return (int) $ticket->created_by === (int) $user->id;
-    }
-
-    private function canEdit(?User $user, Ticket $ticket): bool
-    {
-        if (! $user) {
-            return false;
-        }
-
-        if ($user->role === 'admin') {
-            return true;
-        }
-
-        return $user->role === 'manager' && $user->campus === $ticket->campus;
-    }
 
     private function writeUpdateHistory(Ticket $ticket, array $before, int $userId): void
     {

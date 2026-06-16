@@ -1,0 +1,18 @@
+SOURCE=C:\Users\Admin\Downloads\Диплом_отдельный_расширенный_3_v2.docx
+SAVED_TO=C:\Users\Admin\Downloads\Диплом_отдельный_расширенный_3_v2.docx
+BACKUP=C:\Users\Admin\Downloads\Диплом_отдельный_расширенный_3_v2.bak_figures.docx
+size=1173359
+media=12
+drawings=10
+captions=10
+stats={'1.2': 1, '2.1.2': 1, '2.2': 1, '2.3': 4, 'appendix_a': 2, 'appendix_b': 1}
+  para 27: Рисунок 1
+  para 148: Рисунок 2
+  para 165: Рисунок 3
+  para 211: Рисунок 4
+  para 214: Рисунок 5
+  para 217: Рисунок 6
+  para 220: Рисунок 7
+  para 415: Рисунок 8
+  para 418: Рисунок 9
+  para 424: Рисунок 10

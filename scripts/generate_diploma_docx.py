@@ -4,8 +4,8 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path("/Users/gnome/Downloads/kurso-main 2")
-LIB_DIR = Path("/tmp/docxlib")
+ROOT = Path(__file__).resolve().parents[1]
+LIB_DIR = ROOT / "scripts" / "_docxlib"
 if str(LIB_DIR) not in sys.path:
     sys.path.insert(0, str(LIB_DIR))
 
@@ -125,7 +125,7 @@ def make_bullet(doc: Document, text: str) -> None:
     fmt.first_line_indent = Cm(-0.63)
     fmt.space_after = Pt(0)
     fmt.line_spacing = 1.5
-    run = p.add_run("- " + text)
+    run = p.add_run("— " + text)
     set_run_font(run, size=14)
 
 

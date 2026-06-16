@@ -1,0 +1,34 @@
+TARGET=C:\Users\Admin\Downloads\Диплом_отдельный_расширенный_3_v2.docx
+exists=True
+size=389463
+media_count=7
+  word/media/image1.png 32437
+  word/media/image2.png 37723
+  word/media/image3.png 30210
+  word/media/image4.png 25867
+  word/media/image5.png 57122
+  word/media/image6.png 47687
+  word/media/image7.png 71833
+para 26: IMG 
+para 27:  Рисунок 1
+para 144: IMG 
+para 145:  Рисунок 2
+para 161: IMG 
+para 162:  Рисунок 3
+para 208: IMG 
+para 209:  Рисунок 4
+para 211: IMG 
+para 212:  Рисунок 5
+para 214: IMG 
+para 215:  Рисунок 6
+para 217: IMG 
+para 218:  Рисунок 7
+para 725: IMG 
+para 726:  Рисунок 8
+para 728: IMG 
+para 729:  Рисунок 9
+para 731: IMG 
+para 732:  Рисунок 10
+para 734: IMG 
+para 735:  Рисунок 11
+para 737: IMG 

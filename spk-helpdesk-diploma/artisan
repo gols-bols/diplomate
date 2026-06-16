@@ -1,0 +1,28 @@
+#!/usr/bin/env php
+<?php
+
+define('LARAVEL_START', microtime(true));
+// Diagnostic helpers
+function _dbg($m) {
+	fwrite(STDERR, "[artisan-debug] $m\n");
+}
+
+_dbg('before-autoload');
+require __DIR__.'/vendor/autoload.php';
+_dbg('after-autoload');
+
+_dbg('before-bootstrap');
+$app = require_once __DIR__.'/bootstrap/app.php';
+_dbg('after-bootstrap');
+
+try {
+	_dbg('before-handle');
+	$status = $app->handleCommand(new Symfony\Component\Console\Input\ArgvInput());
+	_dbg('after-handle');
+} catch (Throwable $e) {
+	_dbg('exception: '.$e->getMessage());
+	fwrite(STDERR, $e->getTraceAsString());
+	exit(1);
+}
+
+exit($status);

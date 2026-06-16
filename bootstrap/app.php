@@ -20,4 +20,7 @@ $app->singleton(
     App\Console\Commands\ServeCommand::class
 );
 
+// Register application service providers
+$app->register(App\Providers\AuthServiceProvider::class);
+
 return $app;

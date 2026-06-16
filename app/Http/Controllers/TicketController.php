@@ -187,7 +187,7 @@ class TicketController extends Controller
 
     public function show(Ticket $ticket): View
     {
-        abort_unless($this->canView($ticket), 403);
+        $this->authorize('view', $ticket);
 
         $ticket->load(['creator', 'assignee', 'comments.user']);
 
@@ -196,14 +196,14 @@ class TicketController extends Controller
 
     public function create(): View
     {
-        abort_unless($this->canCreate(), 403);
+        $this->authorize('create', Ticket::class);
 
         return view('tickets.create');
     }
 
     public function store(Request $request): RedirectResponse
     {
-        abort_unless($this->canCreate(), 403);
+        $this->authorize('create', Ticket::class);
 
         $user = auth()->user();
 
@@ -256,7 +256,7 @@ class TicketController extends Controller
 
     public function edit(Ticket $ticket): View
     {
-        abort_unless($this->canEdit($ticket), 403);
+        $this->authorize('update', $ticket);
 
         $managers = User::query()
             ->where('role', 'manager')
@@ -268,7 +268,7 @@ class TicketController extends Controller
 
     public function update(Request $request, Ticket $ticket): RedirectResponse
     {
-        abort_unless($this->canEdit($ticket), 403);
+        $this->authorize('update', $ticket);
 
         $user = auth()->user();
 
@@ -307,7 +307,7 @@ class TicketController extends Controller
 
     public function comment(Request $request, Ticket $ticket): RedirectResponse
     {
-        abort_unless($this->canView($ticket), 403);
+        $this->authorize('view', $ticket);
 
         $data = $request->validate([
             'body' => ['required', 'string', 'max:2000'],
@@ -326,7 +326,7 @@ class TicketController extends Controller
 
     public function transition(Request $request, Ticket $ticket): RedirectResponse
     {
-        abort_unless($this->canEdit($ticket), 403);
+        $this->authorize('update', $ticket);
 
         $data = $request->validate([
             'status' => ['required', 'in:open,in_progress,resolved,closed'],
@@ -340,47 +340,6 @@ class TicketController extends Controller
         return redirect()
             ->route('tickets.show', $ticket)
             ->with('success', 'Статус заявки быстро обновлен.');
-    }
-
-    private function canEdit(Ticket $ticket): bool
-    {
-        $user = auth()->user();
-
-        if (! $user) {
-            return false;
-        }
-
-        if ($user->role === 'admin') {
-            return true;
-        }
-
-        return $user->role === 'manager' && $user->campus === $ticket->campus;
-    }
-
-    private function canView(Ticket $ticket): bool
-    {
-        $user = auth()->user();
-
-        if (! $user) {
-            return false;
-        }
-
-        if ($user->role === 'admin') {
-            return true;
-        }
-
-        if ($user->role === 'manager') {
-            return $user->campus === $ticket->campus;
-        }
-
-        return (int) $ticket->created_by === (int) $user->id;
-    }
-
-    private function canCreate(): bool
-    {
-        $user = auth()->user();
-
-        return $user !== null && $user->role === 'user';
     }
 
     private function visibleTicketsQuery(): Builder

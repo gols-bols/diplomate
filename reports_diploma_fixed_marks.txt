@@ -1,0 +1,20 @@
+FILE: C:\Users\Admin\Downloads\Диплом - правки_исправлено_структура_списки.docx
+PARAGRAPHS: 972
+INLINE_SHAPES: 11
+
+MARKED RUNS:
+
+DRAWINGS:
+0036: 
+0066: 
+0068: 
+0080: 
+0082: 
+0170: 
+0188: 
+0236: 
+0239: 
+0242: 
+0245: 
+
+EMPTY HEADINGS:

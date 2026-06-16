@@ -61,13 +61,67 @@ def set_heading_format(p: Paragraph, *, size: int = 16) -> None:
         run.bold = True
 
 
+def replace_dashes(text: str) -> str:
+    return re.sub(r"\s*[-–—]\s*", " — ", text)
+
+
+def is_numbered_list_line(text: str) -> bool:
+    return bool(re.match(r"^\d+\.\s+", text))
+
+
+def is_hierarchical_numbering(text: str) -> bool:
+    return bool(re.match(r"^\d+(?:\.\d+)+[\.)]?\s+", text))
+
+
+def normalize_numbered_list_paragraph(paragraph: Paragraph, prev_paragraph: Paragraph | None = None, next_paragraph: Paragraph | None = None) -> None:
+    text = paragraph.text or ""
+    if not text.strip() or paragraph.style.name.startswith("Heading"):
+        return
+
+    if is_hierarchical_numbering(text):
+        return
+
+    if re.match(r"^\s*[-–—]\s+", text):
+        set_text(paragraph, replace_dashes(text))
+        return
+
+    if is_numbered_list_line(text):
+        prev_text = (prev_paragraph.text or "").strip() if prev_paragraph is not None else ""
+        next_text = (next_paragraph.text or "").strip() if next_paragraph is not None else ""
+        if (
+            prev_text.endswith(":")
+            or is_numbered_list_line(prev_text)
+            or prev_text.startswith("— ")
+            or re.match(r"^[-–—]\s+", prev_text)
+            or is_numbered_list_line(next_text)
+            or next_text.startswith("— ")
+        ):
+            new_text = re.sub(r"^\d+\.\s+", "— ", text, count=1)
+            set_text(paragraph, replace_dashes(new_text))
+
+
+def lowercase_list_markers(paragraph: Paragraph) -> None:
+    if not paragraph.runs:
+        return
+    text = paragraph.text or ""
+    m = re.match(r"^(\(?)([A-ZА-ЯЁ])([\)\.])?(\s|$)", text)
+    if not m:
+        return
+    marker = m.group(0)
+    normalized = f"{m.group(1)}{m.group(2).lower()}{m.group(3) or ''}{m.group(4)}"
+    if normalized != marker and text.startswith(marker):
+        run = paragraph.runs[0]
+        run.text = run.text.replace(marker, normalized, 1)
+
+
 def normalize_fonts(doc: Document) -> dict[str, int]:
     """14pt everywhere, 16pt only for Heading 1 / 'ГЛАВА'."""
     changed = 0
     kept_16 = 0
     wrong_16 = 0
+    paragraphs = list(doc.paragraphs)
 
-    for p in doc.paragraphs:
+    for idx, p in enumerate(paragraphs):
         text = (p.text or "").strip()
         style = p.style.name if p.style else ""
         is_chapter = style == "Heading 1" or text.upper().startswith("ГЛАВА")
@@ -91,7 +145,15 @@ def normalize_fonts(doc: Document) -> dict[str, int]:
                     changed += 1
                 run.font.name = "Times New Roman"
                 run._element.rPr.rFonts.set(qn("w:eastAsia"), "Times New Roman")
-                # do not force bold=False globally; preserve in-text emphasis
+                run.bold = False
+            if run.text:
+                run.text = replace_dashes(run.text)
+
+        if not is_chapter:
+            prev_p = paragraphs[idx - 1] if idx > 0 else None
+            next_p = paragraphs[idx + 1] if idx + 1 < len(paragraphs) else None
+            normalize_numbered_list_paragraph(p, prev_p, next_p)
+            lowercase_list_markers(p)
 
         if is_chapter and p.runs:
             set_heading_format(p, size=16)

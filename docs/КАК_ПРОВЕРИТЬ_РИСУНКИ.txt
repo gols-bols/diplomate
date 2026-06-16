@@ -1,0 +1,28 @@
+ГЛАВНЫЙ ФАЙЛ ДИПЛОМА (не папка docs в репозитории!)
+================================================
+
+  c:\Users\Admin\Downloads\Диплом_отдельный_расширенный_3_v2.docx
+
+После вставки рисунков (если Word держал файл открытым):
+
+  c:\Users\Admin\Downloads\Диплом_отдельный_расширенный_3_v2_С_РИСУНКАМИ.docx
+
+Резервная копия до правок:
+
+  c:\Users\Admin\Downloads\Диплом_отдельный_расширенный_3_v2.bak_figures.docx
+
+ПРОВЕРКА (из scripts):
+
+  python verify_target_docx.py
+  type insert_report.txt
+
+Ожидается: media >= 10, captions "Рисунок 1" … "Рисунок 10"
+
+ПЕРЕСБОРКА:
+
+  cd kurso-main 2\scripts
+  python regenerate_diploma_final.py
+
+PNG берутся из kurso-main 2\docs\mockup_images и diagram_images.
+
+Закройте Word перед запуском — иначе сохранится только *_С_РИСУНКАМИ.docx.

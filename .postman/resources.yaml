@@ -1,0 +1,7 @@
+# Use this workspace to collaborate
+workspace:
+  id: 1535279e-5cd1-458e-86a8-03f1948b0321
+
+localResources:
+  collections:
+    - ../docs/SPK_Helpdesk_API.postman_collection.json

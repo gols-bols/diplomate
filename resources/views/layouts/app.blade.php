@@ -294,22 +294,47 @@
         }
 
         .filters-row--inline {
-            flex-wrap: nowrap;
-            overflow-x: auto;
+            flex-wrap: wrap;
+            overflow-x: visible;
+            gap: 16px;
         }
 
         .filters-row--inline label {
-            flex: 1 1 160px;
-            min-width: 140px;
+            flex: 1 1 220px;
+            min-width: 180px;
+            width: clamp(220px, 24%, 260px);
+            margin-bottom: 0;
         }
 
         .filters-row .toolbar-actions {
-            flex: 0 0 auto;
+            flex: 1 1 280px;
             display: flex;
-            flex-wrap: nowrap;
-            align-items: flex-end;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: flex-start;
             gap: 8px;
             margin-left: 0;
+        }
+
+        .filters-row--inline input,
+        .filters-row--inline select {
+            width: 100%;
+            min-width: 0;
+        }
+
+        @media (max-width: 1100px) {
+            .filters-row--inline {
+                flex-wrap: wrap;
+            }
+
+            .filters-row--inline label,
+            .filters-row .toolbar-actions {
+                width: 100%;
+            }
+
+            .filters-row .toolbar-actions {
+                justify-content: stretch;
+            }
         }
 
         @media (max-width: 1100px) {
@@ -412,6 +437,14 @@
             color: var(--accent-dark);
             font-size: 13px;
             font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .pill,
+        .filters-row label,
+        .toolbar-actions button,
+        .toolbar-actions a {
+            min-width: 0;
         }
 
         .pill-muted {
@@ -427,21 +460,29 @@
         .status-open {
             background: var(--status-open-bg);
             color: var(--status-open-text);
+            border: 1px solid rgba(138, 90, 0, 0.16);
+            box-shadow: inset 0 0 0 1px rgba(138, 90, 0, 0.08);
         }
 
         .status-progress {
             background: var(--status-progress-bg);
             color: var(--status-progress-text);
+            border: 1px solid rgba(13, 88, 133, 0.16);
+            box-shadow: inset 0 0 0 1px rgba(13, 88, 133, 0.08);
         }
 
         .status-resolved {
             background: var(--status-resolved-bg);
             color: var(--status-resolved-text);
+            border: 1px solid rgba(34, 102, 58, 0.16);
+            box-shadow: inset 0 0 0 1px rgba(34, 102, 58, 0.08);
         }
 
         .status-closed {
             background: var(--status-closed-bg);
             color: var(--status-closed-text);
+            border: 1px solid rgba(90, 74, 168, 0.16);
+            box-shadow: inset 0 0 0 1px rgba(90, 74, 168, 0.08);
         }
 
         .ticket-overdue {

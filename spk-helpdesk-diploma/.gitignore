@@ -1,0 +1,15 @@
+/vendor
+/.env
+/.DS_Store
+/node_modules
+/public/hot
+/public/build
+/bootstrap/cache/*.php
+/storage/*.key
+/storage/logs/*.log
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*.php
+/data/*.sqlite
+*.log
